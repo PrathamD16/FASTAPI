@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+
 
 class Item(BaseModel):
     name:str
@@ -7,12 +9,21 @@ class Item(BaseModel):
 
 app = FastAPI()
 
+#CORS POLICY, important when using in frontend frameworks like REACT, NEXT
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #Get request
 #Logic can be anything, for application we fetch all the data from database and just return it
 @app.get("/getdata")
 async def read_root():
-    return {"1" : "World"}
+    productList = [{"_id":"PROA1", "product_info": Item(name="Soap", price=123)},{"_id":"PROA2", "product_info": Item(name="Sabun", price=111)}]
+    return productList
 
 #Post Request
 #for parameterize endpoint make sure to pass it as parameter in same function
